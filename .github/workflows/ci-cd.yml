@@ -42,5 +42,5 @@ jobs:
         run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/angular-app:latest
 
       - name: Test with docker-compose
-        run: docker-compose up -d
+        run: docker compose up -d
 
