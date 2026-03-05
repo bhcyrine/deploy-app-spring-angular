@@ -1,11 +1,11 @@
-version: "3.3"
 services:
   angular-app:
-    image: angular-app
+    image: cyrine01/angular-app
     ports:
-      - "0.0.0.0:4200:80"      
+      - "0.0.0.0:4200:80"
+
   spring-boot-app:
-    image: spring-app
+    image: cyrine01/spring-app
     ports:
       - "0.0.0.0:8081:8081"
     environment:
@@ -19,18 +19,24 @@ services:
       - SPRING_MVC_CORS_ALLOWED_METHODS=GET,POST,PUT,DELETE
       - SPRING_MVC_CORS_ALLOWED_HEADERS=*
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
 
   mysql:
     image: mysql:5.7
     restart: always
     environment:
       MYSQL_DATABASE: 'demo'
-      MYSQL_ROOT_USERNAME: 'root'
       MYSQL_ROOT_PASSWORD: 'root'
     ports:
       - '0.0.0.0:3306:3306'
     volumes:
       - demo:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
 volumes:
   demo:
